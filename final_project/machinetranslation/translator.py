@@ -9,35 +9,31 @@ load_dotenv()
 apikey = os.environ['apikey']
 url = os.environ['url']
 
-MODEL_ID = 'en-fr'
-TEXT_TO_TRANSLATE = 'Hello, how are you?'
-
-authenticator = IAMAuthenticator('finJqxeDvQZkseC3Boc7jNSnVU-JBF6kctMRcaFxgGEr')
+authenticator = IAMAuthenticator(apikey)
 language_translator = LanguageTranslatorV3(
     version='2018-05-01',
     authenticator=authenticator
-)
+    )
+language_translator.set_service_url(url)
 
-language_translator.set_service_url(
-    'https://api.us-south.language-translator.watson.cloud.'
-    'ibm.com/instances/1ca951d8-7c06-4227-9f41-ae3cae3c1b16')
-
-def english_to_french(_english_text='Hello, how are you?'):
-    #write the code here
-    """Translates english to french
+def english_to_french(text1):
     """
-    french_text=language_translator.translate(
-        text='Hello, how are you?',
-        model_id='en-fr').get_result()
-    print(json.dumps(french_text, indent=2, ensure_ascii=False))
-    return french_text
-
-def french_to_english(_french_text='Bonjour, comment ça va?'):
-    #write the code here
-    """Translates french to english
+    Translates english to french
     """
-    english_text=language_translator.translate(
-        text='Bonjour, comment ça va?',
-        model_id='fr-en').get_result()
-    print(json.dumps(english_text, indent=2, ensure_ascii=False))
-    return english_text
+    frenchtranslation = language_translator.translate(
+        text=text1,
+        model_id='en-fr'
+    ).get_result()
+    
+    return frenchtranslation.get("translations")[0].get("translation")
+
+def french_to_english(text1):
+    """
+    Translates french to english
+    """
+    englishtranslation = language_translator.translate(
+        text=text1,
+        model_id='fr-en'
+    ).get_result()
+    
+    return englishtranslation.get("translations")[0].get("translation")
